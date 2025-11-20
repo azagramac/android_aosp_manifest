@@ -1,0 +1,55 @@
+name: 🐧 Sync default.xml from upstream
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync-default-xml:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        config:
+          - branch: android-latest-release
+            remote_repo: android.googlesource.com/platform/manifest
+            remote_branch: android-latest-release
+            emoji: "🌱"
+          - branch: android16-qpr1-release
+            remote_repo: android.googlesource.com/platform/manifest
+            remote_branch: android16-qpr1-release
+            emoji: "🌿"
+          - branch: kernel/common-android-mainline
+            remote_repo: android.googlesource.com/kernel/manifest
+            remote_branch: common-android-mainline
+            emoji: "⚙️"
+    name: "${{ matrix.config.emoji }} Sync ${{ matrix.config.branch }}"
+    steps:
+      - name: "📂 Checkout branch ${{ matrix.config.branch }}"
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ matrix.config.branch }}
+          token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
+
+      - name: "🔗 Checkout remote ${{ matrix.config.remote_repo }} (${{ matrix.config.remote_branch }})"
+        uses: actions/checkout@v5
+        with:
+          repository: ${{ matrix.config.remote_repo }}
+          ref: ${{ matrix.config.remote_branch }}
+          path: temp_remote
+
+      - name: "📄 Copy default.xml to branch"
+        run: | 
+          cp temp_remote/default.xml ./default.xml
+          if git diff --quiet default.xml; then
+            echo "ℹ️ No changes detected for ${{ matrix.config.branch }}"
+          else
+            echo "✅ default.xml updated for ${{ matrix.config.branch }}"
+          fi
+
+      - name: "💾 Commit & push if changed"
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          commit_message: "${{ matrix.config.emoji }} Update default.xml from remote ${{ matrix.config.remote_branch }}"
+          file_pattern: default.xml
