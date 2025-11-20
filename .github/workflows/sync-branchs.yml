@@ -26,21 +26,19 @@ jobs:
             emoji: "⚙️"
     name: "${{ matrix.config.emoji }} Sync ${{ matrix.config.branch }}"
     steps:
-      - name: "📂 Checkout branch ${{ matrix.config.branch }}"
+      - name: "📂 Checkout branch ${{ matrix.config.branch }} of this repo"
         uses: actions/checkout@v5
         with:
           ref: ${{ matrix.config.branch }}
           token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
 
-      - name: "🔗 Checkout remote ${{ matrix.config.remote_repo }} (${{ matrix.config.remote_branch }})"
-        uses: actions/checkout@v5
-        with:
-          repository: ${{ matrix.config.remote_repo }}
-          ref: ${{ matrix.config.remote_branch }}
-          path: temp_remote
+      - name: "🔗 Clone remote ${{ matrix.config.remote_repo }} (${{ matrix.config.remote_branch }})"
+        run: |
+          echo "🌐 Cloning remote repo..."
+          git clone --depth 1 -b ${{ matrix.config.remote_branch }} https://${{ matrix.config.remote_repo }} temp_remote
 
       - name: "📄 Copy default.xml to branch"
-        run: | 
+        run: |
           cp temp_remote/default.xml ./default.xml
           if git diff --quiet default.xml; then
             echo "ℹ️ No changes detected for ${{ matrix.config.branch }}"
