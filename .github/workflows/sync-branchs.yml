@@ -18,9 +18,9 @@ jobs:
             remote_repo: android.googlesource.com/platform/manifest
             remote_branch: android-latest-release
             emoji: "🌱"
-          - branch: android16-qpr1-release
+          - branch: android16-qpr2-release
             remote_repo: android.googlesource.com/platform/manifest
-            remote_branch: android16-qpr1-release
+            remote_branch: android16-qpr2-release
             emoji: "🌿"
           - branch: kernel/common-android-mainline
             remote_repo: android.googlesource.com/kernel/manifest
