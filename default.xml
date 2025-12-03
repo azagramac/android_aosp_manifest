@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest>
+
   <remote  name="aosp"
            fetch=".."
            review="https://android-review.googlesource.com/" />
   <default revision="android16-qpr2-release"
            remote="aosp"
            sync-j="4" />
+
   <superproject name="platform/superproject" remote="aosp" revision="android16-qpr2-release"/>
   <contactinfo bugurl="go/repo-bug" />
+
   <!-- BEGIN open-source projects -->
   <project path="build/make" name="platform/build" groups="pdk,sysui-studio" >
     <linkfile src="CleanSpec.mk" dest="build/CleanSpec.mk" />
@@ -1038,4 +1041,5 @@
     <copyfile src="lk_inc.mk" dest="lk_inc.mk" />
   </project>
   <!-- END open-source projects -->
+
 </manifest>
